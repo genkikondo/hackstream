@@ -1,23 +1,23 @@
 hsManager = {
 	// Set twitter username, number of tweets & id/class to append tweets
-	user: 'quenesstestacc',
-	numTweets: 50,
 	appendTo: '#hackstream',
+	apiURI: '/api/v1/blocks',
 
 	// Core function of hsManager
 	// -Retrieve tweets from twitter from specified user
 	// 	-If successful, generate HTML to display the data
 	//	-Use jQuery.Isotope to get the stream items into horizontal layout
-	loadTweets: function() {
+	loadTweets: function(lastid) {
 		$.ajax({
-			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=0&count=5',
+			url: hsManager.apiURI + '?lastid=' + lastid + '&count=10',
 			type: 'GET',
 			dataType: 'json',
 			success: function(data, textStatus, xhr) {
 
 				// Append streamitems into page
-				var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+				var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted=PROMOTED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 				var img;
+				var userlink;
 				var category;
 				for (var i = 0; i < data.results.length; i++) {
 				
@@ -35,12 +35,16 @@ hsManager = {
 					
 					}
 
+					userlink = '<a href="' + data.results[i].service + '.com/' + data.results[i].fromScreenName + '">';
+					userlink += '@' + data.results[i].fromScreenName + '</a>';
+
 					$(hsManager.appendTo).append(
 						html.replace('CATEGORY', category)
 							.replace('CREATED', data.results[i].created)
+							.replace('PROMOTED', data.results[i].promoted)
 							.replace('IMG_TAG', img)
 							.replace('TWEET_TEXT', hsManager.ify.clean(data.results[i].text, img) )
-							.replace(/USER/g, data.results[i].fromScreenName)
+							.replace(/USER/g, userlink)
 							.replace('AGO', hsManager.timeAgo(data.results[i].created*1000) )
 					);
 				}
@@ -75,8 +79,9 @@ hsManager = {
 		// data.pic: media (if any)
 		// data.picThumb: pic thumbnail (if any)
 		// data.created: timestamp
-		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted=PROMOTED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 		var img;
+		var userlink;
 		var category;
 		try {
 			if (data.pic) {
@@ -90,11 +95,16 @@ hsManager = {
 			}
 		} catch (e) {
 		}
+
+		userlink = '<a href="' + data.service + '.com/' + data.fromScreenName + '">';
+		userlink += '@' + data.fromScreenName + '</a>';
+
 		var $newItem = $(html.replace('CATEGORY', category)
 				.replace('CREATED', data.created)
+				.replace('PROMOTED', data.promoted)
 				.replace('IMG_TAG', img)
 				.replace('TWEET_TEXT', hsManager.ify.clean(data.text, img) )
-				.replace(/USER/g, data.fromScreenName)
+				.replace(/USER/g, userlink)
 				.replace('AGO', hsManager.timeAgo(data.created*1000) )
 		);
 
@@ -105,7 +115,7 @@ hsManager = {
 	// Get tweets from Hack Movement database
 	getTweets: function(lastid, count) {
 		$.ajax({
-			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=' + lastid + '&count=' + count,
+			url: hsManager.apiURI + '?lastid=' + lastid + '&count=' + count,
 			type: 'GET',
 			dataType: 'json',
 			success: function(data, textStatus, xhr) {
@@ -232,4 +242,4 @@ hsManager = {
 
 
 // Start hsManager
-hsManager.loadTweets();
+hsManager.loadTweets(1353150000);
