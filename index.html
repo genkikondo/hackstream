@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>Hackstream</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+	<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+	<script src="js/hackstream.js"></script>
+	<script src="js/jquery.isotope.min.js"></script>
+	<script src="js/jquery-ui-1.8.23.custom.min.js"></script>
+	<!-- mousewheel plugin -->
+	<script src="js/jquery.mousewheel.min.js"></script>
+	<!-- custom scrollbars plugin -->
+	<script src="js/jquery.mCustomScrollbar.js"></script>
+	<!-- the CSS for Fancybox -->
+	<link rel="stylesheet" type="text/css" href="fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+	<!-- the CSS for Isotope animation -->
+	<link rel="Stylesheet" type="text/css" href="css/jquery.isotope.css" />
+	<!-- the CSS for CustomScrollbar -->
+	<link rel="Stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css" />
+	<style type="text/css">
+		
+		body {font-family:Arial}
+
+		#hackstream {
+			height: 400px;
+			width: 100%;
+			font-family: arial;
+			font-size: 15px;
+			color: #333333;
+			padding: 10px;
+			margin:0 auto;
+		}
+		
+		#hackstream .streamitem {
+			width: 200px;
+			margin:5px;
+			padding: 5px;
+			float:left;
+			background:#f1f1f1;
+			border:3px solid #ddd;
+		}
+		
+		#hackstream .streamitem a {
+			text-decoration: none;
+			color: #FF6A00;
+		}
+
+		#hackstream .streamitem a:hover {
+			text-decoration: underline;
+		}
+		
+		#hackstream .streamitem .time {
+			font-size: 10px;
+			font-style: italic;
+			color: #666666;
+		}
+
+		#hackstream .streamitem .user {
+			font-size: 10px;
+			font-style: italic;
+			color: #000000;
+		}
+
+		#hackstreamfilters {
+			height: 50px;
+			width: 100%;
+			background: #ddd;
+			vertical-align: middle;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+
+		.switchtext, .switchimages {
+			border:none;
+			background:left no-repeat;
+			width:105px;
+			height:46px;
+			padding:0;
+			margin:0;
+		}
+
+		.on, .off {
+			width:50px;
+			height:40px;
+			display:inline-block;
+			cursor:pointer;
+		}
+
+	</style>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.switchtext, .switchimages').css('background', 'url("switch.png")');
+			$('.switchtextinput, .switchimagesinput').css('display','none');
+			$('.on, .off').css('text-indent','-10000px');
+
+		    $("input:radio[name=switchtextinput]").change(function() {
+		      	var switchtextvalue = $("input:radio[name=switchtextinput]:checked").val();
+		      	var switchimagesvalue = $("input:radio[name=switchimagesinput]:checked").val();
+		      	var state = 0;
+				if(switchtextvalue == 'off') {
+					$('.switchtext').css('background-position', 'right');
+				} else if(switchtextvalue == 'on') {
+					$('.switchtext').css('background-position', 'left');
+					state += 1;
+				}
+				if (switchimagesvalue == 'on') {state += 2;}
+				hsManager.applyFilters(state);
+		   	});
+
+		    $("input:radio[name=switchimagesinput]").change(function() {
+		      	var switchtextvalue = $("input:radio[name=switchtextinput]:checked").val();
+		      	var switchimagesvalue = $("input:radio[name=switchimagesinput]:checked").val();
+		      	var state = 0;
+				if(switchimagesvalue == 'off') {
+					$('.switchimages').css('background-position', 'right');
+				} else if(switchimagesvalue == 'on') {
+					$('.switchimages').css('background-position', 'left');
+					state += 2;
+				}
+				if (switchtextvalue == 'on') {state += 1;}
+				hsManager.applyFilters(state);	   
+		   	});
+
+		   	setInterval(function(){alert("Hello")},3000);
+		});
+	</script>
+
+</head>
+<body>
+	<div id="target">
+  		Click here
+	</div>
+	<div id="hackstreamfilters">
+		<form action="" method="get" style='margin: 0; padding: 0'>
+			Conversations
+			<fieldset class="switchtext" style='display:inline;'>
+			    <label class="off">Off<input type="radio" class="switchtextinput" name="switchtextinput" value="off"/></label>
+			    <label class="on">On<input type="radio" class="switchtextinput" name="switchtextinput" value="on" checked="checked"/></label>
+			</fieldset>
+			Images
+			<fieldset class="switchimages" style='display:inline;'>
+			    <label class="off">Off<input type="radio" class="switchimagesinput" name="switchimagesinput" value="off"/></label>
+			    <label class="on">On<input type="radio" class="switchimagesinput" name="switchimagesinput" value="on" checked="checked"/></label>
+			</fieldset>
+		</form>
+	</div>
+	<div id="hackstream">
+	</div>
+	<br />
+
+	<script>
+		$("#target").click(function() {
+			var data = new Object();
+			data.text = "TEST!!!";
+			data.screen_name = "GENKI";
+  			hsManager.addTweet(data);
+		});
+	</script>
+</body>
+</html>
