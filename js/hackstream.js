@@ -10,27 +10,21 @@ hsManager = {
 	//	-Use jQuery.Isotope to get the stream items into horizontal layout
 	loadTweets: function() {
 		$.ajax({
-			url: 'http://api.twitter.com/1/statuses/user_timeline.json/',
+			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=0&count=100',
 			type: 'GET',
-			dataType: 'jsonp',
-			data: {
-				screen_name: hsManager.user,
-				include_rts: true,
-				count: hsManager.numTweets,
-				include_entities: true
-			},
+			dataType: 'json',
 			success: function(data, textStatus, xhr) {
 
-				// Append a streamitem into page
-				var html = '<div class="streamitem" data-category="CATEGORY">IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+				// Append streamitems into page
+				var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 				var img;
 				var category;
-				for (var i = 0; i < data.length; i++) {
+				for (var i = 0; i < data.results.length; i++) {
 				
 					try {
-						if (data[i].entities.media) {
-							img = '<a href="' + data[i].entities.media[0].media_url + ':large" class="fancy">';
-							img += '<img src="' + data[i].entities.media[0].media_url + ':thumb" alt="" width="200" />';
+						if (data.results[i].pic) {
+							img = '<a href="' + data.results[i].pic + ':large" class="fancy">';
+							img += '<img src="' + data.results[i].pic + ':thumb" alt="" width="200" />';
 							img += '</a>';
 							category = 'image';
 						} else {
@@ -43,11 +37,11 @@ hsManager = {
 
 					$(hsManager.appendTo).append(
 						html.replace('CATEGORY', category)
+							.replace('CREATED', data.results[i].created)
 							.replace('IMG_TAG', img)
-							.replace('TWEET_TEXT', hsManager.ify.clean(data[i].text, img) )
-							.replace(/USER/g, data[i].user.screen_name)
-							.replace('AGO', hsManager.timeAgo(data[i].created_at) )
-							.replace(/ID/g, data[i].id_str)							
+							.replace('TWEET_TEXT', hsManager.ify.clean(data.results[i].text, img) )
+							.replace(/USER/g, data.results[i].fromScreenName)
+							.replace('AGO', hsManager.timeAgo(data.results[i].created*1000) )
 					);
 				}
 
@@ -76,13 +70,17 @@ hsManager = {
 
 	// Add a single tweet to hackstream
 	addTweet: function(data) {
-		var html = '<div class="streamitem" data-category="CATEGORY">IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+		// data.text: content
+		// data.fromScreenName: screen name
+		// data.pic: media (if any)
+		// data.created: timestamp
+		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 		var img;
 		var category;
 		try {
-			if (data.entities.media) {
-				img = '<a href="' + data.entities.media[0].media_url + ':large" class="fancy">';
-				img += '<img src="' + data.entities.media[0].media_url + ':thumb" alt="" width="200" />';
+			if (data.pic) {
+				img = '<a href="' + data.pic + ':large" class="fancy">';
+				img += '<img src="' + data.pic + ':thumb" alt="" width="200" />';
 				img += '</a>';
 				category = 'image';
 			} else {
@@ -92,11 +90,12 @@ hsManager = {
 		} catch (e) {
 		}
 		var $newItem = $(html.replace('CATEGORY', category)
+				.replace('CREATED', data.created)
 				.replace('IMG_TAG', img)
 				.replace('TWEET_TEXT', hsManager.ify.clean(data.text, img) )
-				.replace(/USER/g, data.screen_name)
-				.replace('AGO', hsManager.timeAgo(data.created_at) )
-				.replace(/ID/g, data.id_str));
+				.replace(/USER/g, data.fromScreenName)
+				.replace('AGO', hsManager.timeAgo(data.created*1000) )
+		);
 
 		var $container = $('#hackstream');
 		$container.prepend( $newItem ).isotope( 'reloadItems' ).isotope({ sortBy: 'original-order' });
@@ -107,69 +106,30 @@ hsManager = {
 		$.ajax({
 			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=' + lastid,
 			type: 'GET',
-			/*
-			dataType: 'jsonp',
-			data: {
-				screen_name: hsManager.user,
-				include_rts: true,
-				count: hsManager.numTweets,
-				include_entities: true
-			},
-			*/
+			dataType: 'json',
 			success: function(data, textStatus, xhr) {
-				var results = data.results;
-				alert(results);
-				/*
-				// Append a streamitem into page
-				var html = '<div class="streamitem" data-category="CATEGORY">IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
-				var img;
-				var category;
-				for (var i = 0; i < data.length; i++) {
-				
-					try {
-						if (data[i].entities.media) {
-							img = '<a href="' + data[i].entities.media[0].media_url + ':large" class="fancy">';
-							img += '<img src="' + data[i].entities.media[0].media_url + ':thumb" alt="" width="200" />';
-							img += '</a>';
-							category = 'image';
-						} else {
-							img = '';
-							category = 'text';
-						}
-					} catch (e) {
-					
-					}
-
-					$(hsManager.appendTo).append(
-						html.replace('CATEGORY', category)
-							.replace('IMG_TAG', img)
-							.replace('TWEET_TEXT', hsManager.ify.clean(data[i].text, img) )
-							.replace(/USER/g, data[i].user.screen_name)
-							.replace('AGO', hsManager.timeAgo(data[i].created_at) )
-							.replace(/ID/g, data[i].id_str)							
-					);
+				for (var i = 0; i < data.results.length; i++) {
+					hsManager.addTweet(data.results[i]);
 				}
-				*/
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert("FAILED");
+				// Activate fancybox
+				$("a.fancy").fancybox({
+					'overlayShow'	: false,
+					'transitionIn'	: 'elastic',
+					'transitionOut'	: 'elastic',
+					'overlayShow'	: true
+				});
 			}
 		});
-	}
+	},
 	
 	/**
       * relative time calculator FROM TWITTER
       * @param {string} twitter date string returned from Twitter API
       * @return {string} relative time like "2 minutes ago"
       */
-    timeAgo: function(dateString) {
+    timeAgo: function(unixtimestamp) {
 		var rightNow = new Date();
-		var then = new Date(dateString);
-		
-		if ($.browser.msie) {
-			// IE can't parse these crazy Ruby dates
-			then = Date.parse(dateString.replace(/( \+)/, ' UTC$1'));
-		}
+		var then = new Date(unixtimestamp);
 
 		var diff = rightNow - then;
 

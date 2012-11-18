@@ -8,17 +8,10 @@
 	<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<script src="js/hackstream.js"></script>
 	<script src="js/jquery.isotope.min.js"></script>
-	<script src="js/jquery-ui-1.8.23.custom.min.js"></script>
-	<!-- mousewheel plugin -->
-	<script src="js/jquery.mousewheel.min.js"></script>
-	<!-- custom scrollbars plugin -->
-	<script src="js/jquery.mCustomScrollbar.js"></script>
 	<!-- the CSS for Fancybox -->
 	<link rel="stylesheet" type="text/css" href="fancybox/jquery.fancybox-1.3.4.css" media="screen" />
 	<!-- the CSS for Isotope animation -->
 	<link rel="Stylesheet" type="text/css" href="css/jquery.isotope.css" />
-	<!-- the CSS for CustomScrollbar -->
-	<link rel="Stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css" />
 	<style type="text/css">
 		
 		body {font-family:Arial}
@@ -55,12 +48,14 @@
 			font-size: 10px;
 			font-style: italic;
 			color: #666666;
+			text-align: right;
 		}
 
 		#hackstream .streamitem .user {
 			font-size: 10px;
 			font-style: italic;
 			color: #000000;
+			text-align: right;
 		}
 
 		#hackstreamfilters {
@@ -124,7 +119,27 @@
 				hsManager.applyFilters(state);	   
 		   	});
 
-		   	//setInterval(function(){alert("Hello")},3000);
+		   	// Function to get the Max value in Array
+	        Array.max = function( array ){
+	            return Math.max.apply( Math, array );
+	        };
+	    
+	        // Function to get the Min value in Array
+	        Array.min = function( array ){
+	           return Math.min.apply( Math, array );
+	        };
+
+		   	setInterval(function(){
+				var lastids = new Array();
+        		$(".streamitem").each(function(index){
+            		lastids.push($(this).attr('data-created'));
+        		});
+        		var lastid = 0;
+        		if (lastids.length > 0) {
+		   			lastid = Array.max(lastids);
+		   		}
+  				hsManager.getTweets(lastid);
+  			},10000);
 		});
 	</script>
 
@@ -153,7 +168,7 @@
 
 	<script>
 		$("#target").click(function() {
-			var lastid = 0;
+			var lastid = 1353210552;
   			hsManager.getTweets(lastid);
 		});
 	</script>
