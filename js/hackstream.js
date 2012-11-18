@@ -17,14 +17,19 @@ hsManager = {
 				// Append streamitems into page
 				var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted=PROMOTED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 				var img;
+				var imgwidth;
 				var userlink;
 				var category;
 				for (var i = 0; i < data.results.length; i++) {
+					imgwidth = 200;
+					if (data.results[i].promoted=1) {
+						imgwidth = 400;
+					}
 				
 					try {
 						if (data.results[i].pic) {
 							img = '<a href="' + data.results[i].pic + '" class="fancy">';
-							img += '<img src="' + data.results[i].picThumb + '" alt="" width="200" />';
+							img += '<img src="' + data.results[i].picThumb + '" alt="" width="' + imgwidth + '" />';
 							img += '</a>';
 							category = 'image';
 						} else {
@@ -81,12 +86,16 @@ hsManager = {
 		// data.created: timestamp
 		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted=PROMOTED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 		var img;
+		var imgwidth = 200;
 		var userlink;
 		var category;
+		if (data.promoted = 1) {
+			imgwidth = 400;
+		}
 		try {
 			if (data.pic) {
 				img = '<a href="' + data.pic + '" class="fancy">';
-				img += '<img src="' + data.picThumb + '" alt="" width="200" />';
+				img += '<img src="' + data.picThumb + '" alt="" width="' + imgwidth + '" />';
 				img += '</a>';
 				category = 'image';
 			} else {
@@ -109,7 +118,9 @@ hsManager = {
 		);
 
 		var $container = $('#hackstream');
-		$container.prepend( $newItem ).isotope( 'reloadItems' ).isotope({ sortBy: 'original-order' });
+		$container.imagesLoaded(function() {
+			$container.prepend( $newItem ).isotope( 'reloadItems' ).isotope({ sortBy: 'original-order' });
+		});
 	},
 
 	// Get tweets from Hack Movement database
