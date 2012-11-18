@@ -92,7 +92,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function(){
-			$('.switchtext, .switchimages').css('background', 'url("switch.png")');
+			$('.switchtext, .switchimages').css('background', 'url("images/switch.png")');
 			$('.switchtextinput, .switchimagesinput').css('display','none');
 			$('.on, .off').css('text-indent','-10000px');
 
@@ -124,7 +124,7 @@
 				hsManager.applyFilters(state);	   
 		   	});
 
-		   	setInterval(function(){alert("Hello")},3000);
+		   	//setInterval(function(){alert("Hello")},3000);
 		});
 	</script>
 
@@ -153,10 +153,8 @@
 
 	<script>
 		$("#target").click(function() {
-			var data = new Object();
-			data.text = "TEST!!!";
-			data.screen_name = "GENKI";
-  			hsManager.addTweet(data);
+			var lastid = 0;
+  			hsManager.getTweets(lastid);
 		});
 	</script>
 </body>

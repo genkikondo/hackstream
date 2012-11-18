@@ -101,6 +101,61 @@ hsManager = {
 		var $container = $('#hackstream');
 		$container.prepend( $newItem ).isotope( 'reloadItems' ).isotope({ sortBy: 'original-order' });
 	},
+
+	// Get tweets from Hack Movement database
+	getTweets: function(lastid) {
+		$.ajax({
+			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=' + lastid,
+			type: 'GET',
+			/*
+			dataType: 'jsonp',
+			data: {
+				screen_name: hsManager.user,
+				include_rts: true,
+				count: hsManager.numTweets,
+				include_entities: true
+			},
+			*/
+			success: function(data, textStatus, xhr) {
+				var results = data.results;
+				alert(results);
+				/*
+				// Append a streamitem into page
+				var html = '<div class="streamitem" data-category="CATEGORY">IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+				var img;
+				var category;
+				for (var i = 0; i < data.length; i++) {
+				
+					try {
+						if (data[i].entities.media) {
+							img = '<a href="' + data[i].entities.media[0].media_url + ':large" class="fancy">';
+							img += '<img src="' + data[i].entities.media[0].media_url + ':thumb" alt="" width="200" />';
+							img += '</a>';
+							category = 'image';
+						} else {
+							img = '';
+							category = 'text';
+						}
+					} catch (e) {
+					
+					}
+
+					$(hsManager.appendTo).append(
+						html.replace('CATEGORY', category)
+							.replace('IMG_TAG', img)
+							.replace('TWEET_TEXT', hsManager.ify.clean(data[i].text, img) )
+							.replace(/USER/g, data[i].user.screen_name)
+							.replace('AGO', hsManager.timeAgo(data[i].created_at) )
+							.replace(/ID/g, data[i].id_str)							
+					);
+				}
+				*/
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert("FAILED");
+			}
+		});
+	}
 	
 	/**
       * relative time calculator FROM TWITTER
