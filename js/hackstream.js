@@ -10,7 +10,7 @@ hsManager = {
 	//	-Use jQuery.Isotope to get the stream items into horizontal layout
 	loadTweets: function() {
 		$.ajax({
-			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=0&count=100',
+			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=0&count=5',
 			type: 'GET',
 			dataType: 'json',
 			success: function(data, textStatus, xhr) {
@@ -23,8 +23,8 @@ hsManager = {
 				
 					try {
 						if (data.results[i].pic) {
-							img = '<a href="' + data.results[i].pic + ':large" class="fancy">';
-							img += '<img src="' + data.results[i].pic + ':thumb" alt="" width="200" />';
+							img = '<a href="' + data.results[i].pic + '" class="fancy">';
+							img += '<img src="' + data.results[i].picThumb + '" alt="" width="200" />';
 							img += '</a>';
 							category = 'image';
 						} else {
@@ -73,14 +73,15 @@ hsManager = {
 		// data.text: content
 		// data.fromScreenName: screen name
 		// data.pic: media (if any)
+		// data.picThumb: pic thumbnail (if any)
 		// data.created: timestamp
 		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 		var img;
 		var category;
 		try {
 			if (data.pic) {
-				img = '<a href="' + data.pic + ':large" class="fancy">';
-				img += '<img src="' + data.pic + ':thumb" alt="" width="200" />';
+				img = '<a href="' + data.pic + '" class="fancy">';
+				img += '<img src="' + data.picThumb + '" alt="" width="200" />';
 				img += '</a>';
 				category = 'image';
 			} else {
@@ -102,9 +103,9 @@ hsManager = {
 	},
 
 	// Get tweets from Hack Movement database
-	getTweets: function(lastid) {
+	getTweets: function(lastid, count) {
 		$.ajax({
-			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=' + lastid,
+			url: 'http://www-local.hackmovement.com/api/v1/blocks?lastid=' + lastid + '&count=' + count,
 			type: 'GET',
 			dataType: 'json',
 			success: function(data, textStatus, xhr) {

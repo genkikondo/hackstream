@@ -14,7 +14,10 @@
 	<link rel="Stylesheet" type="text/css" href="css/jquery.isotope.css" />
 	<style type="text/css">
 		
-		body {font-family:Arial}
+		body {
+			background: #ffffff;
+			font-family: Arial;
+		}
 
 		#hackstream {
 			height: 400px;
@@ -138,16 +141,14 @@
         		if (lastids.length > 0) {
 		   			lastid = Array.max(lastids);
 		   		}
-  				hsManager.getTweets(lastid);
-  			},10000);
+		   		var randomNumber = 1 + Math.floor(Math.random() * 10);
+  				hsManager.getTweets(lastid, randomNumber);
+  			},1000);
 		});
 	</script>
 
 </head>
 <body>
-	<div id="target">
-  		Click here
-	</div>
 	<div id="hackstreamfilters">
 		<form action="" method="get" style='margin: 0; padding: 0'>
 			Conversations
@@ -165,12 +166,5 @@
 	<div id="hackstream">
 	</div>
 	<br />
-
-	<script>
-		$("#target").click(function() {
-			var lastid = 1353210552;
-  			hsManager.getTweets(lastid);
-		});
-	</script>
 </body>
 </html>
