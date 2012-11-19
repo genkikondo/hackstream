@@ -15,14 +15,14 @@ hsManager = {
 			success: function(data, textStatus, xhr) {
 
 				// Append streamitems into page
-				var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted=PROMOTED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+				var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted="PROMOTED">IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 				var img;
 				var imgwidth;
 				var userlink;
 				var category;
 				for (var i = 0; i < data.results.length; i++) {
 					imgwidth = 200;
-					if (data.results[i].promoted=1) {
+					if (data.results[i].promoted = '1') {
 						imgwidth = 400;
 					}
 				
@@ -84,12 +84,12 @@ hsManager = {
 		// data.pic: media (if any)
 		// data.picThumb: pic thumbnail (if any)
 		// data.created: timestamp
-		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted=PROMOTED>IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
+		var html = '<div class="streamitem" data-category="CATEGORY" data-created=CREATED data-promoted="PROMOTED">IMG_TAG TWEET_TEXT<div class="time">AGO</div><div class="user">USER</div></div>';
 		var img;
 		var imgwidth = 200;
 		var userlink;
 		var category;
-		if (data.promoted = 1) {
+		if (data.promoted = '1') {
 			imgwidth = 400;
 		}
 		try {
